@@ -23,6 +23,10 @@ class Settings(BaseSettings):
     mail_port: int
     mail_server: str
 
+    # Redis
+    redis_host: str = "localhost"
+    redis_port: int = 6379
+
     # Використовуємо property, щоб Pydantic не шукав це поле в .env
     @property
     def sqlalchemy_database_url(self) -> str:

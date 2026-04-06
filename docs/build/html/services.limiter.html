@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>services.limiter module &#8212; Contacts App 1.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css?v=279e0f84" />
+    <script src="_static/documentation_options.js?v=8d563738"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="schemas package" href="schemas.html" />
+    <link rel="prev" title="services.email module" href="services.email.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="schemas.html" title="schemas package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="services.email.html" title="services.email module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Contacts App 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >Project Modules</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="services.html" accesskey="U">services package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">services.limiter module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-services.limiter">
+<span id="services-limiter-module"></span><h1>services.limiter module<a class="headerlink" href="#module-services.limiter" title="Link to this heading">¶</a></h1>
+<section id="rate-limiter-service-module">
+<h2>Rate Limiter Service Module<a class="headerlink" href="#rate-limiter-service-module" title="Link to this heading">¶</a></h2>
+<p>This module initializes the rate limiting mechanism for the FastAPI application
+using the <cite>slowapi</cite> library. It helps prevent brute-force attacks and API abuse
+by restricting the number of requests from a single source.</p>
+</section>
+<dl class="py data">
+<dt class="sig sig-object py" id="services.limiter.limiter">
+<span class="sig-prename descclassname"><span class="pre">services.limiter.</span></span><span class="sig-name descname"><span class="pre">limiter</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;slowapi.extension.Limiter</span> <span class="pre">object&gt;</span></span><a class="headerlink" href="#services.limiter.limiter" title="Link to this definition">¶</a></dt>
+<dd><p>Instance of the Limiter.
+Uses the remote IP address of the client as the unique identifier for rate limits.</p>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">services.limiter module</a><ul>
+<li><a class="reference internal" href="#rate-limiter-service-module">Rate Limiter Service Module</a></li>
+<li><a class="reference internal" href="#services.limiter.limiter"><code class="docutils literal notranslate"><span class="pre">limiter</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="services.email.html"
+                          title="previous chapter">services.email module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="schemas.html"
+                          title="next chapter">schemas package</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/services.limiter.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="schemas.html" title="schemas package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="services.email.html" title="services.email module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Contacts App 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >Project Modules</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="services.html" >services package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">services.limiter module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2026, Vlad Popov.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    </div>
+  </body>
+</html>

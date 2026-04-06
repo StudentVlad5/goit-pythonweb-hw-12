@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>services.cloudinary &#8212; Contacts App 1.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/nature.css?v=279e0f84" />
+    <script src="../../_static/documentation_options.js?v=8d563738"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Contacts App 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">services.cloudinary</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for services.cloudinary</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Cloudinary Service Module</span>
+<span class="sd">-------------------------</span>
+<span class="sd">This module provides integration with the Cloudinary service for managing </span>
+<span class="sd">image uploads, transformations, and generating public URLs for user avatars.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">cloudinary</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">cloudinary.uploader</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">config.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
+
+<div class="viewcode-block" id="CloudinaryService">
+<a class="viewcode-back" href="../../services.cloudinary.html#services.cloudinary.CloudinaryService">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CloudinaryService</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Service class for interacting with the Cloudinary API.</span>
+<span class="sd">    Handles configuration and image processing operations.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the Cloudinary configuration using settings from the application config.</span>
+<span class="sd">        Sets cloud name, API key, API secret, and forces secure (HTTPS) connections.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cloudinary</span><span class="o">.</span><span class="n">config</span><span class="p">(</span>
+            <span class="n">cloud_name</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">cloudinary_name</span><span class="p">,</span>
+            <span class="n">api_key</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">cloudinary_api_key</span><span class="p">,</span>
+            <span class="n">api_secret</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">cloudinary_api_secret</span><span class="p">,</span>
+            <span class="n">secure</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="CloudinaryService.upload_image">
+<a class="viewcode-back" href="../../services.cloudinary.html#services.cloudinary.CloudinaryService.upload_image">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">upload_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">public_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Uploads an image file to Cloudinary and returns a transformed URL.</span>
+
+<span class="sd">        The image is overwritten if the public_id already exists. The returned </span>
+<span class="sd">        URL points to a version of the image cropped to a 250x250 square using </span>
+<span class="sd">        the &#39;fill&#39; method.</span>
+
+<span class="sd">        :param file: The file-like object or path to the image to be uploaded.</span>
+<span class="sd">        :type file: Any</span>
+<span class="sd">        :param public_id: The unique identifier (path) for the image in Cloudinary.</span>
+<span class="sd">        :type public_id: str</span>
+<span class="sd">        :return: A secure URL to the transformed image.</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">cloudinary</span><span class="o">.</span><span class="n">uploader</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">public_id</span><span class="o">=</span><span class="n">public_id</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">src_url</span> <span class="o">=</span> <span class="n">cloudinary</span><span class="o">.</span><span class="n">CloudinaryImage</span><span class="p">(</span><span class="n">public_id</span><span class="p">)</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span> <span class="n">crop</span><span class="o">=</span><span class="s1">&#39;fill&#39;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;version&#39;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">src_url</span></div>
+</div>
+
+
+<span class="n">cloudinary_service</span> <span class="o">=</span> <span class="n">CloudinaryService</span><span class="p">()</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Contacts App 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">services.cloudinary</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2026, Vlad Popov.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    </div>
+  </body>
+</html>

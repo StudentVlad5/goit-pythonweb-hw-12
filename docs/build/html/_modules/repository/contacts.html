@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>repository.contacts &#8212; Contacts App 1.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/nature.css?v=279e0f84" />
+    <script src="../../_static/documentation_options.js?v=8d563738"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Contacts App 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">repository.contacts</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for repository.contacts</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Contacts Repository Module</span>
+<span class="sd">--------------------------</span>
+<span class="sd">This module contains the CRUD (Create, Read, Update, Delete) operations </span>
+<span class="sd">for managing contacts in the database, ensuring each user only accesses their own data.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">and_</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">database.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Contact</span><span class="p">,</span> <span class="n">User</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">schemas.contact</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContactCreate</span><span class="p">,</span> <span class="n">ContactUpdate</span>
+
+<div class="viewcode-block" id="get_contacts">
+<a class="viewcode-back" href="../../repository.contacts.html#repository.contacts.get_contacts">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_contacts</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">last_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Contact</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves a list of contacts for a specific user with optional filters.</span>
+
+<span class="sd">    :param name: Optional filter by first name (case-insensitive partial match).</span>
+<span class="sd">    :type name: str</span>
+<span class="sd">    :param last_name: Optional filter by last name (case-insensitive partial match).</span>
+<span class="sd">    :type last_name: str</span>
+<span class="sd">    :param email: Optional filter by email address (case-insensitive partial match).</span>
+<span class="sd">    :type email: str</span>
+<span class="sd">    :param user: The owner of the contacts.</span>
+<span class="sd">    :type user: User</span>
+<span class="sd">    :param db: The database session.</span>
+<span class="sd">    :type db: Session</span>
+<span class="sd">    :return: A list of contacts that match the criteria.</span>
+<span class="sd">    :rtype: List[Contact]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Contact</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Contact</span><span class="o">.</span><span class="n">user_id</span> <span class="o">==</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Contact</span><span class="o">.</span><span class="n">first_name</span><span class="o">.</span><span class="n">ilike</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;%</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">last_name</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Contact</span><span class="o">.</span><span class="n">last_name</span><span class="o">.</span><span class="n">ilike</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;%</span><span class="si">{</span><span class="n">last_name</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">email</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Contact</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">ilike</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;%</span><span class="si">{</span><span class="n">email</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_contact">
+<a class="viewcode-back" href="../../repository.contacts.html#repository.contacts.get_contact">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_contact</span><span class="p">(</span><span class="n">contact_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Contact</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves a single contact by its ID for a specific user.</span>
+
+<span class="sd">    :param contact_id: The unique identifier of the contact.</span>
+<span class="sd">    :type contact_id: int</span>
+<span class="sd">    :param user: The owner of the contact.</span>
+<span class="sd">    :type user: User</span>
+<span class="sd">    :param db: The database session.</span>
+<span class="sd">    :type db: Session</span>
+<span class="sd">    :return: The contact object if found and owned by the user, otherwise None.</span>
+<span class="sd">    :rtype: Contact | None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Contact</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">and_</span><span class="p">(</span><span class="n">Contact</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">contact_id</span><span class="p">,</span> <span class="n">Contact</span><span class="o">.</span><span class="n">user_id</span> <span class="o">==</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">))</span><span class="o">.</span><span class="n">first</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="create_contact">
+<a class="viewcode-back" href="../../repository.contacts.html#repository.contacts.create_contact">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_contact</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">ContactCreate</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Contact</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a new contact associated with a specific user.</span>
+
+<span class="sd">    :param body: The data for the new contact.</span>
+<span class="sd">    :type body: ContactCreate</span>
+<span class="sd">    :param user: The user who will own this contact.</span>
+<span class="sd">    :type user: User</span>
+<span class="sd">    :param db: The database session.</span>
+<span class="sd">    :type db: Session</span>
+<span class="sd">    :return: The newly created contact.</span>
+<span class="sd">    :rtype: Contact</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">contact</span> <span class="o">=</span> <span class="n">Contact</span><span class="p">(</span><span class="o">**</span><span class="n">body</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(),</span> <span class="n">user_id</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">contact</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">refresh</span><span class="p">(</span><span class="n">contact</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">contact</span></div>
+
+
+
+<div class="viewcode-block" id="remove_contact">
+<a class="viewcode-back" href="../../repository.contacts.html#repository.contacts.remove_contact">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">remove_contact</span><span class="p">(</span><span class="n">contact_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Contact</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deletes a specific contact from the database for a given user.</span>
+
+<span class="sd">    :param contact_id: The ID of the contact to be removed.</span>
+<span class="sd">    :type contact_id: int</span>
+<span class="sd">    :param user: The owner of the contact.</span>
+<span class="sd">    :type user: User</span>
+<span class="sd">    :param db: The database session.</span>
+<span class="sd">    :type db: Session</span>
+<span class="sd">    :return: The removed contact if successful, otherwise None.</span>
+<span class="sd">    :rtype: Contact | None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">contact</span> <span class="o">=</span> <span class="n">get_contact</span><span class="p">(</span><span class="n">contact_id</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>  
+    <span class="k">if</span> <span class="n">contact</span><span class="p">:</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">contact</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">contact</span></div>
+
+
+<div class="viewcode-block" id="update_contact">
+<a class="viewcode-back" href="../../repository.contacts.html#repository.contacts.update_contact">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">update_contact</span><span class="p">(</span><span class="n">contact_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">body</span><span class="p">:</span> <span class="n">ContactUpdate</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Contact</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Updates an existing contact&#39;s information for a specific user.</span>
+
+<span class="sd">    Only updates the fields provided in the body (exclude_unset=True).</span>
+
+<span class="sd">    :param contact_id: The ID of the contact to update.</span>
+<span class="sd">    :type contact_id: int</span>
+<span class="sd">    :param body: The updated contact data.</span>
+<span class="sd">    :type body: ContactUpdate</span>
+<span class="sd">    :param user: The owner of the contact.</span>
+<span class="sd">    :type user: User</span>
+<span class="sd">    :param db: The database session.</span>
+<span class="sd">    :type db: Session</span>
+<span class="sd">    :return: The updated contact if found, otherwise None.</span>
+<span class="sd">    :rtype: Contact | None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">contact</span> <span class="o">=</span> <span class="n">get_contact</span><span class="p">(</span><span class="n">contact_id</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span> 
+    <span class="k">if</span> <span class="n">contact</span><span class="p">:</span>
+        <span class="c1"># exclude_unset=True допоможе не затерти дані пустими значеннями</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">body</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">contact</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">refresh</span><span class="p">(</span><span class="n">contact</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">contact</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Contacts App 1.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">repository.contacts</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2026, Vlad Popov.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    </div>
+  </body>
+</html>
